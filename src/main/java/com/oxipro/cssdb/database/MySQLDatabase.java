@@ -1,19 +1,18 @@
-package com.oxipro.cssdb.support.mysql;
+package com.oxipro.cssdb.database;
 
 import com.oxipro.cssdb.config.DBConfig;
-import com.oxipro.cssdb.support.IDBSupport;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class MySQLSupport implements IDBSupport {
+public class MySQLDatabase implements Database {
 
     private final DBConfig config;
     private HikariDataSource dataSource;
 
-    public MySQLSupport(DBConfig config) {
+    public MySQLDatabase(DBConfig config) {
         this.config = config;
     }
 
@@ -27,20 +26,20 @@ public class MySQLSupport implements IDBSupport {
 
         hikari.setMaximumPoolSize(10);
         hikari.setMinimumIdle(2);
-        hikari.setIdleTimeout(30000);
+        hikari.setPoolName("CSSDB");
 
         dataSource = new HikariDataSource(hikari);
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
-
-    @Override
-    public void shutdown() {
+    public void disconnect() {
         if (dataSource != null) {
             dataSource.close();
         }
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

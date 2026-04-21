@@ -1,6 +1,6 @@
 package com.oxipro.cssdb.repository.stats;
 
-import com.oxipro.cssdb.support.IDBSupport;
+import com.oxipro.cssdb.database.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,13 +11,14 @@ import java.util.UUID;
 
 public class StatsRepository {
 
-    private final IDBSupport db;
+    private final Database db;
 
-    public StatsRepository(IDBSupport db) {
+    public StatsRepository(Database db) {
         this.db = db;
     }
 
     public void initTable() {
+
         String sql = "CREATE TABLE IF NOT EXISTS player_stats (" +
                 "uuid VARCHAR(36) NOT NULL," +
                 "stat_key VARCHAR(64) NOT NULL," +
@@ -58,7 +59,71 @@ public class StatsRepository {
         return stats;
     }
 
+    public Integer get(UUID uuid, String key) {
+
+        String sql = "SELECT stat_value FROM player_stats WHERE uuid=? AND stat_key=?";
+
+        try (Connection c = db.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, uuid.toString());
+            ps.setString(2, key);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("stat_value");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void set(UUID uuid, String key, int value) {
+
+        String sql = "INSERT INTO player_stats (uuid, stat_key, stat_value) VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE stat_value=?";
+
+        try (Connection c = db.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, uuid.toString());
+            ps.setString(2, key);
+            ps.setInt(3, value);
+            ps.setInt(4, value);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void increment(UUID uuid, String key, int amount) {
+
+        String sql = "INSERT INTO player_stats (uuid, stat_key, stat_value) VALUES (?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE stat_value = stat_value + ?";
+
+        try (Connection c = db.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, uuid.toString());
+            ps.setString(2, key);
+            ps.setInt(3, amount);
+            ps.setInt(4, amount);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void save(UUID uuid, Map<String, Integer> stats) {
+
         String sql = "INSERT INTO player_stats (uuid, stat_key, stat_value) VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE stat_value=?";
 

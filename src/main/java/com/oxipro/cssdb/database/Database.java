@@ -1,13 +1,11 @@
-package com.oxipro.cssdb.support;
+package com.oxipro.cssdb.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface IDBSupport {
-
+public interface Database {
     void connect();
+    void disconnect();
 
     Connection getConnection() throws SQLException;
-
-    void shutdown();
 }
