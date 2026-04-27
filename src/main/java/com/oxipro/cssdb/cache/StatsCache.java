@@ -31,11 +31,6 @@ public class StatsCache {
         getMap(uuid).put(key, value);
     }
 
-    public void increment(UUID uuid, String key, int amount) {
-        Map<String, Integer> map = getMap(uuid);
-        map.put(key, map.getOrDefault(key, 0) + amount);
-    }
-
     public void save(UUID uuid) {
         Map<String, Integer> stats = cache.get(uuid);
         if (stats != null) {

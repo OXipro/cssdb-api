@@ -45,4 +45,6 @@ public class CSSDB {
     public PlayerSettingRepository getPlayerSettingsRepository() {
         return playerSettingsRepository;
     }
+
+    public String getVersion() { return "1.0"; }
 }
