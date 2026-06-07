@@ -127,6 +127,27 @@ public class PlayerSettingRepository {
         }
     }
 
+    public boolean exists(UUID uuid, String key) {
+
+        String sql = "SELECT 1 FROM player_settings WHERE uuid=? AND setting_key=? LIMIT 1";
+
+        try (Connection c = db.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, uuid.toString());
+            ps.setString(2, key);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public void delete(UUID uuid) {
 
         String sql = "DELETE FROM player_settings WHERE uuid=?";
