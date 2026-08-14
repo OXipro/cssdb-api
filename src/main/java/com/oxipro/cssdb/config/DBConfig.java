@@ -1,6 +1,6 @@
 package com.oxipro.cssdb.config;
 
-import com.oxipro.cmu.configlang.api.IConfigFile;
+import com.oxipro.cmu.configlang.api.config.IConfigFile;
 
 import java.util.HashMap;
 import java.util.Map;
