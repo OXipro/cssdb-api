@@ -28,8 +28,6 @@ public class MySQLDatabase implements Database {
         hikari.setMinimumIdle(2);
         hikari.setPoolName("CSSDB");
 
-        hikari.setDriverClassName("com.mysql.cj.jdbc.Driver");
-
         dataSource = new HikariDataSource(hikari);
     }
 
